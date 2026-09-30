@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Drillbench</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app" id="app">
+    <div class="topbar">
+      <div class="brand"><span class="brand-mark">&#9670;</span> Drillbench</div>
+      <div class="topbar-right" id="topbarRight"></div>
+    </div>
+
+    <section class="screen card" id="emptyScreen" hidden>
+      <h1>No question set loaded</h1>
+      <p class="lede">Paste your study material to Claude in chat and ask it to generate a question set &mdash; it will write <code>data/questions.js</code> for you. Then reload this page.</p>
+    </section>
+
+    <section class="screen" id="quizScreen" hidden>
+      <div class="quiz-wrap">
+        <div class="set-title" id="setTitle"></div>
+        <div class="progress-block">
+          <span class="progress-label" id="progressLabel">0 / 0</span>
+          <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+          <div class="score-pills">
+            <span class="pill"><span class="dot" style="background:var(--good)"></span><span id="countMastered">0</span></span>
+            <span class="pill"><span class="dot" style="background:var(--warn)"></span><span id="countShaky">0</span></span>
+            <span class="pill"><span class="dot" style="background:var(--bad)"></span><span id="countMissed">0</span></span>
+          </div>
+        </div>
+
+        <nav class="qlist" id="qList"></nav>
+
+        <div class="card">
+          <div class="q-head">
+            <span class="tag" id="qTopic">Topic</span>
+            <span class="tag" id="qDifficulty">medium</span>
+          </div>
+          <p class="q-text" id="qText">Question text</p>
+
+          <label class="field-label" for="answerInput">Your answer</label>
+          <textarea id="answerInput" placeholder="Type your answer, or think it through out loud, then reveal the key points." style="min-height:120px;"></textarea>
+
+          <div class="action-row">
+            <button class="btn" id="revealBtn">Reveal key points</button>
+          </div>
+
+          <div class="reveal-panel" id="revealPanel" hidden></div>
+
+          <div class="rate-row">
+            <button class="btn rate-btn rate-missed" id="rateMissed">Missed it</button>
+            <button class="btn rate-btn rate-shaky" id="rateShaky">Shaky</button>
+            <button class="btn rate-btn rate-mastered" id="rateMastered">Nailed it</button>
+          </div>
+
+          <div class="nav-row">
+            <button class="btn btn-sm btn-ghost" id="prevBtn">&larr; Previous</button>
+            <button class="btn btn-sm btn-ghost" id="finishBtn">Finish &amp; view results</button>
+            <button class="btn btn-sm btn-ghost" id="nextBtn">Next &rarr;</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen card" id="summaryScreen" hidden>
+      <h1>Results</h1>
+      <div class="summary-top">
+        <div class="ring-wrap">
+          <svg width="128" height="128" viewBox="0 0 128 128">
+            <circle cx="64" cy="64" r="54" fill="none" stroke="var(--surface-2)" stroke-width="12"></circle>
+            <circle id="ringArc" cx="64" cy="64" r="54" fill="none" stroke="var(--accent)" stroke-width="12" stroke-linecap="round" transform="rotate(-90 64 64)"></circle>
+          </svg>
+          <div class="ring-num"><strong id="ringPct">0%</strong><span>mastered</span></div>
+        </div>
+        <div class="summary-pills">
+          <div class="row"><span class="dot" style="background:var(--good)"></span><span id="sumMastered">0 mastered</span></div>
+          <div class="row"><span class="dot" style="background:var(--warn)"></span><span id="sumShaky">0 shaky</span></div>
+          <div class="row"><span class="dot" style="background:var(--bad)"></span><span id="sumMissed">0 missed</span></div>
+        </div>
+      </div>
+
+      <div class="review-list" id="reviewList"></div>
+
+      <div class="summary-actions">
+        <button class="btn btn-primary" id="retryWeakBtn">Drill weak spots again</button>
+        <button class="btn" id="backToQuizBtn">Back to questions</button>
+        <button class="btn btn-ghost" id="restartBtn">Restart this set</button>
+      </div>
+    </section>
+  </div>
+
+  <script src="data/questions.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
