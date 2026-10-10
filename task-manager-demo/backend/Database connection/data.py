@@ -9,8 +9,8 @@ email: 'setlhomara@gmail.com'
 
 TASKS
 ----------------
-id
-user_id
-title
-description
-completed
+id: 
+user_id: 
+title: 
+description: 
+completed: 

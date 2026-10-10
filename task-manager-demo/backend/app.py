@@ -1,15 +1,17 @@
 from flask import Flask, jsonify, request  #We are importing the Flask funtionality
 from flask_cors import CORS 
+import os
 import sqlite3
 from datetime import datetime
 
 app = Flask(__name__) #This creates the Flask App
-# think of "app" = as our backendapplication
+# think of "app" = as our backend application
 
 ## Allow our React frontend to communicate with Flask
-CORS(app)  # this mans thats our backend will be running ofa dfferent development ports
+CORS(app)  # this means thats our backend & frontend will be running of a dfferent development ports by sending requests
 
-DATABASE = "tasks.db"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATABASE = os.path.join(BASE_DIR, "tasks.db")
 
 
 # -----------------------------------------
@@ -17,7 +19,8 @@ DATABASE = "tasks.db"
 # -----------------------------------------
 
 def get_db_connection(): #this creates a reusable function
-    connection = sqlite3.connect(DATABASE) #this connects the SQLite database
+    connection = sqlite3.connect(DATABASE) #this opens sql database
+    # connects the SQLite database
     connection.row_factory = sqlite3.Row
     return connection
 
@@ -52,7 +55,7 @@ def get_tasks():
 
     connection = get_db_connection() #assigning the task e.g open the fridge
 
-#We add the query database below
+#We add the query database below 
 #Hey fridge show me everything ===>Select *
 #From ===> tasks
 #Order by ID Desc ===> returns newest first. & fetchall() the data
@@ -86,15 +89,17 @@ def get_tasks():
 @app.route("/api/tasks", methods=["POST"])
 def create_task():
 
-    data = request.get_json()  #I want to Ad a new dish ==> it does'nt change the fridge
+    data = request.get_json(silent=True)  #I want to Add a new dish ==> it doesn't change the fridge
 
     if not data:
         return jsonify({
             "error": "Request body is required"
         }), 400
 
-    title = data.get("title", "").strip() #taking out the title from the box
-    description = data.get("description", "").strip()
+    title_raw = data.get("title", "")
+    title = title_raw.strip() if isinstance(title_raw, str) else ""
+    desc_raw = data.get("description", "")
+    description = desc_raw.strip() if isinstance(desc_raw, str) else ""
 
     if not title:
         return jsonify({
@@ -133,7 +138,7 @@ def create_task():
 @app.route("/api/tasks/<int:task_id>", methods=["PUT"])
 def update_task(task_id):
 
-    data = request.get_json()
+    data = request.get_json(silent=True)
 
     if not data:
         return jsonify({
